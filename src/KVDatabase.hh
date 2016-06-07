@@ -13,8 +13,6 @@ class KVDatabase {
 	int _file_handler;
 	void * _buffer;
 	int _port_handler;
-
-	int _size;
 public:
 	KVDatabase(const char *host, unsigned short port, const char *file);
 	~KVDatabase();
@@ -22,6 +20,8 @@ public:
 	int execute();
 private:
 	void mount_data_file();
+	void listen_port();
+	void main_loop();
 private:
 	KVDatabase(const KVDatabase&) = delete;
 	KVDatabase & operator=(const KVDatabase&) = delete;

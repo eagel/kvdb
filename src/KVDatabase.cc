@@ -16,7 +16,7 @@ namespace eagel {
 
 KVDatabase::KVDatabase(const char *host, unsigned short port, const char *file) :
 		_host(host), _port(port), _file(file), _file_handler(0), _buffer(
-				nullptr), _port_handler(0), _size(0) {
+				nullptr), _port_handler(0) {
 
 }
 
@@ -29,9 +29,8 @@ KVDatabase::~KVDatabase() {
 		reinterpret_cast<DataFile *>(_buffer)->pid(0);
 		reinterpret_cast<DataFile *>(_buffer)->mounted(false);
 
-		munmap(_buffer, _size);
+		munmap(_buffer, reinterpret_cast<DataFile *>(_buffer)->length());
 		_buffer = nullptr;
-		_size = 0;
 	}
 	if (0 != _file_handler) {
 		close(_file_handler);
@@ -41,6 +40,7 @@ KVDatabase::~KVDatabase() {
 
 int KVDatabase::execute() {
 	mount_data_file();
+	listen_port();
 	// TODO
 	return EXIT_SUCCESS;
 }
@@ -188,6 +188,10 @@ void KVDatabase::mount_data_file() {
 	reinterpret_cast<DataFile *>(_buffer)->pid(getpid());
 
 	msync(_buffer, reinterpret_cast<DataFile *>(_buffer)->length(), MS_SYNC);
+}
+
+void KVDatabase::listen_port() {
+	// TODO
 }
 
 } /* namespace eagel */
