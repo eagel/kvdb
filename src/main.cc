@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
 	if (argc < 3) {
-		std::cout << "Usage: cpp host port [data-file]" << std::endl;
+		std::cout << "Usage: kvdb host port [data-file]" << std::endl;
 		return EXIT_FAILURE;
 	}
 
