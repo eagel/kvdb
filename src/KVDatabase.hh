@@ -1,6 +1,9 @@
 #ifndef KVDATABASE_HH_
 #define KVDATABASE_HH_
 
+#include <set>
+#include <map>
+#include <sstream>
 #include "DataFile.hh"
 
 namespace eagel {
@@ -10,9 +13,12 @@ class KVDatabase {
 	unsigned short _port;
 	const char * _file;
 
-	int _file_handler;
+	int _file_descriptor;
 	void * _buffer;
-	int _port_handler;
+	std::set<int> _listen_descriptors;
+	std::set<int> _opened_descriptors;
+	std::map<int,std::stringstream> _read_buffers;
+	std::map<int,std::stringstream> _write_buffers;
 public:
 	KVDatabase(const char *host, unsigned short port, const char *file);
 	~KVDatabase();
