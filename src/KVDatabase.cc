@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <sys/socket.h>
 
 namespace eagel {
 
@@ -261,9 +262,6 @@ void KVDatabase::main_loop() {
 	int nfds;
 
 	while (true) {
-		// FIXME
-		std::cout << "loop" << std::endl;
-		//
 
 		FD_ZERO(&read_fds);
 		FD_ZERO(&write_fds);
@@ -313,14 +311,12 @@ void KVDatabase::main_loop() {
 				_write_buffers.insert(
 						std::map<int, std::stringstream>::value_type(s,
 								std::stringstream()));
-				// FIXME
-				std::cout << "connected: " << s << std::endl;
-				//
 			}
 		}
 
 		// process opened port
 		for (int i : std::set<int>(_opened_descriptors)) {
+			// process read
 			if (FD_ISSET(i, &read_fds)) {
 				char buffer[1024];
 				int read = recv(i, buffer, 1024, 0);
@@ -330,9 +326,11 @@ void KVDatabase::main_loop() {
 					_write_buffers.erase(i);
 					_opened_descriptors.erase(i);
 				} else {
-					// TODO
+					_read_buffers[i].write(buffer, read);
+					received(i);
 				}
 			}
+			// process write
 			if (FD_ISSET(i, &write_fds)) {
 				std::string data = _write_buffers[i].str();
 
@@ -347,6 +345,7 @@ void KVDatabase::main_loop() {
 					_write_buffers[i].seekp(0, std::stringstream::end);
 				}
 			}
+			// process error
 			if (FD_ISSET(i, &error_fds)) {
 				close(i);
 				_read_buffers.erase(i);
@@ -356,6 +355,10 @@ void KVDatabase::main_loop() {
 		}
 	}
 
+}
+
+void KVDatabase::received(int i) {
+	std::cout << _read_buffers[i].str() << std::endl;
 }
 
 } /* namespace eagel */

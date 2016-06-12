@@ -17,8 +17,8 @@ class KVDatabase {
 	void * _buffer;
 	std::set<int> _listen_descriptors;
 	std::set<int> _opened_descriptors;
-	std::map<int,std::stringstream> _read_buffers;
-	std::map<int,std::stringstream> _write_buffers;
+	std::map<int, std::stringstream> _read_buffers;
+	std::map<int, std::stringstream> _write_buffers;
 public:
 	KVDatabase(const char *host, unsigned short port, const char *file);
 	~KVDatabase();
@@ -28,6 +28,8 @@ private:
 	void mount_data_file();
 	void listen_port();
 	void main_loop();
+
+	void received(int i);
 private:
 	KVDatabase(const KVDatabase&) = delete;
 	KVDatabase & operator=(const KVDatabase&) = delete;
