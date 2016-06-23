@@ -21,5 +21,4 @@ int main(int argc, char *argv[]) {
 		std::cout << e << std::endl;
 		return EXIT_FAILURE;
 	}
-
 }
