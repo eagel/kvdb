@@ -358,7 +358,7 @@ void KVDatabase::main_loop() {
 }
 
 void KVDatabase::received(int i) {
-	// TODO
+	// TODO assert is a completed commad
 	std::cout << _read_buffers[i].str() << std::endl;
 	// TODO call command handler
 }
