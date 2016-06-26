@@ -358,11 +358,50 @@ void KVDatabase::main_loop() {
 }
 
 void KVDatabase::received(int i) {
-	// TODO assert is a completed commad.
-	std::cout << _read_buffers[i].str() << std::endl;
-	// TODO call command handler.
+	std::string data = _read_buffers[i].str();
 
+	std::string::size_type pos = data.find(';');
 
+	if (pos != std::string::npos) {
+		_read_buffers[i].str(data.substr(pos + 1, data.size()));
+		_read_buffers[i].seekp(0, std::stringstream::end);
+
+		std::string cmd = data.substr(0, pos);
+
+		// remove front white character
+		while (0 == cmd.find_first_of(" \r\n\t")) {
+			cmd.erase(cmd.begin());
+		}
+
+		// remove tail white character
+		while (0 != cmd.size()
+				&& (cmd.size() - 1) == cmd.find_last_of(" \r\n\t")) {
+			cmd.pop_back();
+		}
+
+		process(cmd.c_str());
+	}
+
+}
+
+void KVDatabase::process(const char *cmd) {
+	std::string d = cmd;
+
+	std::string::size_type pos = d.find_first_of(" \r\n\t");
+
+	if (std::string::npos == pos) {
+		pos = d.size();
+	}
+
+	std::string c = d.substr(0, pos);
+	std::string p = d.substr(pos, d.size());
+
+	// remove front white character
+	while (0 == p.find_first_of(" \r\n\t")) {
+		p.erase(p.begin());
+	}
+
+	// TODO check command and execute
 }
 
 } /* namespace eagel */

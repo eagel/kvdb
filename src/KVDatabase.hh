@@ -30,6 +30,7 @@ private:
 	void main_loop();
 
 	void received(int i);
+	void process(const char *cmd);
 private:
 	KVDatabase(const KVDatabase&) = delete;
 	KVDatabase & operator=(const KVDatabase&) = delete;
